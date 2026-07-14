@@ -366,3 +366,108 @@ Ký hiệu: 🆓 = miễn phí/đọc online · 📖 = sách · 📄 = paper/spe
    con hào phòng thủ thật.
 5. Cascade, structural diff, round-trip tinh vi: **chờ người dùng thật** (mục
    I.4, I.5 phần I).
+
+---
+
+## Phần III — Bộ làm việc đóng (giao thức ngồi xuống làm)
+
+> Mục tiêu của phần này: **đóng vòng lặp.** Chấm dứt cái loop "tra thêm một
+> cái nữa" vô hạn. Đây là ranh giới cho vùng suy nghĩ — đọc hết CANON, rồi
+> **được phép dừng** và bắt đầu code. Không chống khám phá, nhưng không thần
+> thánh hóa nó để trì hoãn việc cần xong.
+
+### 1. Đóng vùng đọc: CANON vs MANUAL
+
+Chia mọi tài nguyên ở Phần II làm hai loại. Đây là ranh giới quan trọng nhất.
+
+**CANON — ĐỌC HẾT, theo thứ tự, rồi DỪNG.** (Chỉ 4 thứ; 2 thứ rất ngắn.)
+
+1. **Crafting Interpreters** (E) — chỉ cần **nửa tree-walking interpreter**
+   (Part I + phần đầu Part II). Đủ để dựng lexer/parser/AST. *Đây là phần dày
+   nhất phải đọc.*
+2. **Typst — architecture.md** (E) — **~1 trang.** Đọc để nạp *hình dạng* của
+   pipeline 4 pha + ý tưởng content-tree. Ngắn, đọc trong một lần cà phê.
+3. **Knuth–Plass (1981)** (B) — đọc **trước bước 2 lộ trình**, không phải bước
+   1 (skeleton đầu dùng ngắt dòng tham lam). Đọc kỹ phần box/glue/penalty.
+4. **CSS-Tricks — Cascade Layers Guide** (G) — **ngắn.** Chỉ để nạp *bài học*:
+   ưu tiên phải tường minh, đừng suy ngầm từ selector. Đọc để thiết kế format
+   (giữ cửa), không phải để làm cascade bây giờ.
+
+> **Đọc xong 4 thứ trên = đủ để bắt đầu. Đóng trình duyệt lại.**
+
+**MANUAL — KHÔNG đọc từ đầu tới cuối. Chỉ mở khi code thực sự chạm tới nó:**
+
+- Unicode UAX #14 / #9 / #29 (B) — grep khi xử lý ngắt/bidi/segmentation.
+- HarfBuzz / cosmic-text / rustybuzz (C) — đọc *quickstart* của crate khi cần
+  đo/shape chữ; không đọc nội thất.
+- OpenType MATH / MathML Core (D) — chỉ khi làm tầng toán.
+- PDF/SVG spec (J) — chỉ tra API của thư viện; không đọc spec.
+- Pandoc AST / Djot / CommonMark (F) — tham khảo *khi chốt cú pháp*, đọc chỗ
+  liên quan, không đọc hết.
+- Tree-sitter / LSP / CRDT / structural diff (E, H, I) — chỉ mở khi tới đúng
+  bước cần chúng (phần lớn là giai đoạn editor, HOÃN).
+
+Mọi thứ còn lại ở Phần II = "tra khi kẹt", **không phải bài đọc bắt buộc.**
+
+### 2. Đóng vùng tra cứu: luật chống-tra-vô-hạn
+
+Phân biệt hai loại "tra", vì chỉ một loại là chính đáng lúc đang build:
+
+- **Cần-để-quyết** (được phép, có giới hạn): thiếu một mẩu sự thật cụ thể mà
+  không có nó thì không viết tiếp được dòng code này.
+- **Tò-mò / hoàn-thiện** (CẤM lúc đang build): "biết đâu có cách hay hơn",
+  "để chắc ăn xem thêm vài nguồn". Đây là cái loop vô hạn. Ghi vào "để sau",
+  đừng tra bây giờ.
+
+**Luật cứng:**
+
+1. **Quyết-rồi-mới-kiểm, không kiểm-rồi-mới-quyết.** Ra quyết định từ CANON +
+   những gì đã chốt trong tài liệu này. Ghi lại. Đi tiếp. **Chỉ** tra lại nếu
+   code *thật sự vỡ*, không tra vì lo xa.
+2. **Trần nguồn: tối đa 2 nguồn cho một quyết định.** Hết 2 nguồn mà chưa rõ →
+   quyết bằng cái đang có, đánh dấu "giả định", đi tiếp.
+3. **Timebox:** một câu hỏi tra quá ~15 phút mà chưa đóng → nó không phải
+   "cần-để-quyết", nó là "tò mò". Dừng, ghi vào để-sau.
+4. **Không mở lại việc đã chốt.** Mọi thứ trong Phần I mục 3 (KHÓA) là đóng.
+   Gặp cám dỗ xét lại → đọc lại dòng đã chốt, không tranh luận lại.
+
+### 3. Nhật ký quyết định (cơ chế chống loop thật sự)
+
+Tài liệu này **đã là** một nhật ký quyết định — cấu trúc *chốt / hoãn / giữ
+cửa* chính là nó. Tiếp tục nó: mỗi lần ra một quyết định mới lúc code, ghi một
+dòng — *quyết định gì, vì sao, và nó thuộc KHÓA hay HOÃN hay GIỮ-CỬA.*
+
+Đây là thứ chấm dứt loop: **một câu hỏi đã có dòng trong nhật ký thì không bao
+giờ được tra lại.** Loop vô hạn sống nhờ việc quên mất mình đã quyết rồi. Nhật
+ký giết nó.
+
+### 4. Đóng phạm vi mỗi phiên làm: walking skeleton + "đủ tốt"
+
+- **Không đặc tả toàn hệ trước.** Xác định *lát cắt dọc mỏng nhất chạy được*
+  rồi làm nó xuyên suốt: bước 1 lộ trình = parse → layout (tham lam) → render
+  một đoạn văn + một heading ra SVG. Mọi thứ khác treo vào bộ xương này.
+- **Định nghĩa "đủ tốt" trước khi làm, để biết khi nào DỪNG đánh bóng.** Ví dụ
+  skeleton: "render đúng chữ, đúng thứ tự, ngắt dòng không vỡ" = xong. Chưa
+  cần Knuth–Plass, chưa cần đẹp. Đủ tốt là đủ — nhớ luật đừng-over-engineer.
+
+### 5. Chỗ duy nhất PHẢI đặc tả gần-đầy-đủ trước khi gõ
+
+Vì nó là **format** (đắt kinh khủng để đổi sau — xem Phần I mục 5):
+
+- **Grammar của ngôn ngữ** (EBNF hoặc tương đương).
+- **Ranh giới inline/block liệt kê ĐẦY ĐỦ:** cái nào là inline-mang-nghĩa
+  (bold/italic/code/link…), cái nào là block-component, cái nào bị CẤM inline
+  (màu, cỡ, khoảng cách).
+- **Cú pháp file layout + cơ chế trỏ** về document (handle/id do editor đúc).
+- **Vài golden examples:** "input này → output kia" — làm mỏ neo khách quan
+  (đặc biệt cần nếu dùng agent AI: nó thay cho 'gu' mà agent không tự có).
+
+> Đây là phần *duy nhất* nên waterfall-hóa. Mọi thứ khác: khám phá lúc làm.
+
+---
+
+### Tóm tắt một dòng
+
+**Đọc 4 thứ trong CANON → đặc tả grammar + ranh giới inline/block + vài golden
+example → dựng walking skeleton → mọi thứ còn lại là tra-khi-kẹt và khám-phá-
+khi-làm. Ghi nhật ký quyết định. Đừng mở lại việc đã chốt. Ngồi xuống và làm.**
